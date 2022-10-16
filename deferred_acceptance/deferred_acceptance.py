@@ -41,6 +41,7 @@ def deferred_acceptance(
         for student in students_df.index:
             if student not in unassigned_students:
                 school = available_school[student]
+
                 best_choice = students_df.loc[student][
                     students_df.loc[student].index.isin(school)
                 ].idxmin()
@@ -59,7 +60,7 @@ def deferred_acceptance(
                         pair: matches[pair] for pair in matches.keys() if school in pair
                     }.items(),
                     key=lambda x: x[1][1],
-                )[1:]
+                )[schools_quota[school]:]
 
                 for p_to_drop in pairs_to_drop:
                     del matches[p_to_drop[0]]
