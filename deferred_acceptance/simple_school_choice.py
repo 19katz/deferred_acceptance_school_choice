@@ -103,9 +103,9 @@ def check_minority_student_welfare(min_student, normal_match, aff_act_match):
 
 if __name__ == "__main__":
     schools_list = ['c1', 'c2']
-    schools_quota = {"c1": 1, "c2": 2}
+    schools_quota = {"c1": 2, "c2": 1}
     num_students = 3
-    fraction_min = 0.34
+    fraction_min = 0.67
     alpha_mean_maj = 1
     alpha_std = 1
     beta_std = 1
@@ -121,8 +121,6 @@ if __name__ == "__main__":
 
 
     for i in range(500):
-        print(i)
-
         school_permutations = list(itertools.permutations(range(1, len(schools_list) + 1)))
         students, students_preferences = create_students(num_students, school_permutations, fraction_min, alpha_mean_maj, alpha_std, beta_std)
         schools_preferences = create_school_rankings(students, False, schools_list)
@@ -167,6 +165,6 @@ if __name__ == "__main__":
     print("# Benefitted " + str(num_benefit))
     print("# Unchanged " + str(num_unchanged))
     print("# Worsened " + str(num_worsened))
-    print("# Worsened " + str(num_total))
+    print("# Total " + str(num_total))
 
     
