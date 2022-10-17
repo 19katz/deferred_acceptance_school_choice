@@ -136,19 +136,11 @@ if __name__ == "__main__":
             if student.min == True:
                 min_students.append(student.name)
 
-        print(min_students)
-        print(students_preferences)
-        print(schools_preferences)
-        print(aff_act_schools_preferences)
-
         normal_match = simple_school_choice(schools_list, schools_quota, students_list, schools_preferences, students_preferences)
         aff_act_match = simple_school_choice(schools_list, schools_quota, students_list, aff_act_schools_preferences, students_preferences)
 
         normal_match_keys = list(normal_match.keys())
         aff_act_match_keys = list(aff_act_match.keys())
-        print(normal_match_keys)
-        print(aff_act_match_keys)
-        print(aff_act_match)
 
         if normal_match_keys == aff_act_match_keys:
             num_same += 1
@@ -163,12 +155,18 @@ if __name__ == "__main__":
                     num_unchanged += 1
                 else:
                     num_worsened += 1
+                    print("Minority students: " + str(min_students))
+                    print("Student preferences: " + str(students_preferences))
+                    print("School preferences: " + str(schools_preferences))
+                    print("Affirmative Action School preferences: " + str(aff_act_schools_preferences))
+                    print("Normal Match: " + str(normal_match))
+                    print("Affirmative Action Match: " + str(aff_act_match))
 
-    print(num_same)
-    print(num_diff)
-    print(num_benefit)
-    print(num_unchanged)
-    print(num_worsened)
-    print(num_total)
+    print("# Same " + str(num_same))
+    print("# Diff " + str(num_diff))
+    print("# Benefitted " + str(num_benefit))
+    print("# Unchanged " + str(num_unchanged))
+    print("# Worsened " + str(num_worsened))
+    print("# Worsened " + str(num_total))
 
     
