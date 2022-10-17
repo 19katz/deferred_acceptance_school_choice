@@ -93,7 +93,12 @@ def check_minority_student_welfare(min_student, normal_match, aff_act_match):
         if min_student in key:
             aff_act_ranking = aff_act_match[key][0]
     
-    return (normal_ranking < aff_act_ranking)
+    if normal_ranking < aff_act_ranking:
+        return 1
+    elif normal_ranking == aff_act_ranking:
+        return 0
+    else:
+        return -1
 
 
 if __name__ == "__main__":
@@ -101,7 +106,7 @@ if __name__ == "__main__":
     schools_quota = {"c1": 1, "c2": 2}
     num_students = 3
     fraction_min = 0.34
-    alpha_mean_maj = 3
+    alpha_mean_maj = 1
     alpha_std = 1
     beta_std = 1
 
@@ -111,6 +116,9 @@ if __name__ == "__main__":
     num_unchanged = 0
     num_benefit = 0
     num_worsened = 0
+
+    num_total = 0
+
 
     for i in range(500):
         print(i)
@@ -144,18 +152,23 @@ if __name__ == "__main__":
 
         if normal_match_keys == aff_act_match_keys:
             num_same += 1
-            num_unchanged += len(min_students)
         else:
             num_diff += 1
             for student in min_students:
+                num_total += 1
                 min_improve = check_minority_student_welfare(student, normal_match, aff_act_match)
-                if min_improve:
-                    num_
-
-            
-
+                if min_improve == 1:
+                    num_benefit += 1
+                elif min_improve == 0:
+                    num_unchanged += 1
+                else:
+                    num_worsened += 1
 
     print(num_same)
     print(num_diff)
+    print(num_benefit)
+    print(num_unchanged)
+    print(num_worsened)
+    print(num_total)
 
     
