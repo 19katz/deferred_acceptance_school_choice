@@ -6,63 +6,116 @@ import sys
 from deferred_acceptance import deferred_acceptance
 from utils import create_dataframes
 
-class Student:
-    def __init__(self, name, permutations, minority):
-        self.name = name
-        self.alpha = 0
-        self.beta = 0
-        self.min = minority
-        self.school_pref = list(random.sample(permutations, 1)[0])
+# class Student:
+#     def __init__(self, name, permutations, minority):
+#         self.name = name
+#         self.alpha = 0
+#         self.beta = 0
+#         self.min = minority
+#         self.school_pref = list(random.sample(permutations, 1)[0])
     
-    def set_alpha_beta(self, alpha_mean_maj, alpha_std, beta_std):
-        self.beta = np.random.normal(0, beta_std)
+#     def set_alpha_beta(self, alpha_mean_maj, alpha_std, beta_std):
+#         self.beta = np.random.normal(0, beta_std)
 
-        if self.min:
-            self.alpha = np.random.normal(0, alpha_std)
-        else:
-            self.alpha = np.random.normal(alpha_mean_maj, alpha_std)
+#         if self.min:
+#             self.alpha = np.random.normal(0, alpha_std)
+#         else:
+#             self.alpha = np.random.normal(alpha_mean_maj, alpha_std)
 
-def create_students(num_students, schools, fraction_min, alpha_mean_maj, alpha_std, beta_std):
+# def create_students(num_students, schools, fraction_min, alpha_mean_maj, alpha_std, beta_std):
+#     students_list = []
+#     for i in range(num_students):
+#         student_name = "s" + str(i + 1)
+#         students_list.append(student_name)
+#     min_students = random.sample(students_list, int(num_students * fraction_min))
+
+#     students = []
+#     for s in students_list:
+#         is_min = (s in min_students)
+#         student = Student(s, schools, is_min)
+#         student.set_alpha_beta(alpha_mean_maj, alpha_std, beta_std)
+#         students.append(student)
+    
+#     student_preferences = {}
+
+#     for s in students:
+#         student_preferences[s.name] = s.school_pref
+
+#     return students, student_preferences
+
+# def create_school_rankings(students, schools):
+#     # scores = []
+#     # indices = []
+#     # aff_act_scores = []
+#     # for i in range(0, len(students)):
+#     #     indices.append(i + 1)
+#     #     scores.append(students[i].alpha + students[i].beta)
+#     #     aff_act_scores.append(students[i].beta)
+
+#     # scores, new_indices = (list(t) for t in zip(*sorted(zip(scores, indices), reverse=True)))
+#     # aff_act_scores, aff_act_indices = (list(t) for t in zip(*sorted(zip(aff_act_scores, indices), reverse=True)))
+
+#     # school_preferences = {}
+#     # for i in range(len(schools)):
+#     #     if i == 0 and aff_act:
+#     #         school_preferences[schools[i]] = aff_act_indices
+#     #     else:
+#     #         school_preferences[schools[i]] = new_indices
+
+#     student_permutations = list(itertools.permutations(range(1, len(students) + 1)))
+
+#     normal_school_preferences = {}
+#     aff_act_school_preferences = {}
+#     for i in range(len(schools)):
+#         normal_prefs, aff_act_prefs = random.sample(student_permutations, 2)
+#         if i == 0:
+#             aff_act_school_preferences[schools[i]] = list(aff_act_prefs)
+#             normal_school_preferences[schools[i]] = list(normal_prefs)
+#         else:
+#             aff_act_school_preferences[schools[i]] = list(normal_prefs)
+#             normal_school_preferences[schools[i]] = list(normal_prefs)
+
+#     return normal_school_preferences, aff_act_school_preferences
+
+def create_schools_and_students(num_schools, num_students):
+    schools_list = []
+    schools_quota = {}
+    for i in range(num_schools):
+        school_name = "c" + str(i + 1)
+        schools_list.append(school_name)
+        schools_quota[school_name] = 1
+
     students_list = []
     for i in range(num_students):
         student_name = "s" + str(i + 1)
         students_list.append(student_name)
-    min_students = random.sample(students_list, int(num_students * fraction_min))
-
-    students = []
-    for s in students_list:
-        is_min = (s in min_students)
-        student = Student(s, schools, is_min)
-        student.set_alpha_beta(alpha_mean_maj, alpha_std, beta_std)
-        students.append(student)
     
+    return students_list, schools_list, schools_quota
+
+def create_student_rankings(students_list, schools):
+    school_permutations = list(itertools.permutations(range(1, len(schools) + 1)))
+
     student_preferences = {}
+    for s in students_list:
+        student_preferences[s] = list(random.sample(school_permutations, 1)[0])
 
-    for s in students:
-        student_preferences[s.name] = s.school_pref
+    return student_preferences
 
-    return students, student_preferences
+def create_school_rankings(schools_list, students):
+    student_permutations = list(itertools.permutations(range(1, len(students) + 1)))
 
-def create_school_rankings(students, aff_act, schools):
-    scores = []
-    indices = []
-    aff_act_scores = []
-    for i in range(0, len(students)):
-        indices.append(i + 1)
-        scores.append(students[i].alpha + students[i].beta)
-        aff_act_scores.append(students[i].beta)
-
-    scores, new_indices = (list(t) for t in zip(*sorted(zip(scores, indices), reverse=True)))
-    aff_act_scores, aff_act_indices = (list(t) for t in zip(*sorted(zip(aff_act_scores, indices), reverse=True)))
-
-    school_preferences = {}
-    for i in range(len(schools)):
-        if i == 0 and aff_act:
-            school_preferences[schools[i]] = aff_act_indices
+    normal_school_preferences = {}
+    aff_act_school_preferences = {}
+    for i in range(len(schools_list)):
+        normal_prefs, aff_act_prefs = random.sample(student_permutations, 2)
+        if i == 0:
+            aff_act_school_preferences[schools_list[i]] = list(aff_act_prefs)
+            normal_school_preferences[schools_list[i]] = list(normal_prefs)
         else:
-            school_preferences[schools[i]] = new_indices
+            aff_act_school_preferences[schools_list[i]] = list(normal_prefs)
+            normal_school_preferences[schools_list[i]] = list(normal_prefs)
 
-    return school_preferences
+    return normal_school_preferences, aff_act_school_preferences
 
 def simple_school_choice(schools_list, schools_quota, students_list, schools_preferences, students_preferences) -> None:
     """
@@ -83,17 +136,18 @@ def simple_school_choice(schools_list, schools_quota, students_list, schools_pre
 
     return matches
 
-def check_minority_student_welfare(min_student, normal_match, aff_act_match):
+def check_student_welfare(student, normal_match, aff_act_match):
     normal_ranking = -1
     aff_act_ranking = -1
+
     for key in normal_match:
-        if min_student in key:
+        if student in key:
             normal_ranking = normal_match[key][0]
     for key in aff_act_match:
-        if min_student in key:
+        if student in key:
             aff_act_ranking = aff_act_match[key][0]
     
-    if normal_ranking < aff_act_ranking:
+    if normal_ranking > aff_act_ranking:
         return 1
     elif normal_ranking == aff_act_ranking:
         return 0
@@ -102,37 +156,18 @@ def check_minority_student_welfare(min_student, normal_match, aff_act_match):
 
 
 if __name__ == "__main__":
-    schools_list = ['c1', 'c2']
-    schools_quota = {"c1": 2, "c2": 1}
-    num_students = 3
-    fraction_min = 0.67
-    alpha_mean_maj = 1
-    alpha_std = 1
-    beta_std = 1
+    num_students = 5
+    num_schools = 5
 
     num_same = 0
     num_diff = 0
-
-    num_unchanged = 0
-    num_benefit = 0
-    num_worsened = 0
-
     num_total = 0
 
 
-    for i in range(500):
-        school_permutations = list(itertools.permutations(range(1, len(schools_list) + 1)))
-        students, students_preferences = create_students(num_students, school_permutations, fraction_min, alpha_mean_maj, alpha_std, beta_std)
-        schools_preferences = create_school_rankings(students, False, schools_list)
-        aff_act_schools_preferences = create_school_rankings(students, True, schools_list)
-        students_list = [s.name for s in students]
-        students_score = [s.alpha + s.beta for s in students]
-        aff_act_score = [s.beta for s in students]
-        min_students = []
-
-        for student in students:
-            if student.min == True:
-                min_students.append(student.name)
+    for i in range(5000):
+        students_list, schools_list, schools_quota = create_schools_and_students(num_schools, num_students)
+        students_preferences = create_student_rankings(students_list, schools_list)
+        schools_preferences, aff_act_schools_preferences = create_school_rankings(schools_list, students_list)
 
         normal_match = simple_school_choice(schools_list, schools_quota, students_list, schools_preferences, students_preferences)
         aff_act_match = simple_school_choice(schools_list, schools_quota, students_list, aff_act_schools_preferences, students_preferences)
@@ -144,27 +179,21 @@ if __name__ == "__main__":
             num_same += 1
         else:
             num_diff += 1
-            for student in min_students:
-                num_total += 1
-                min_improve = check_minority_student_welfare(student, normal_match, aff_act_match)
-                if min_improve == 1:
-                    num_benefit += 1
-                elif min_improve == 0:
-                    num_unchanged += 1
-                else:
-                    num_worsened += 1
-                    print("Minority students: " + str(min_students))
-                    print("Student preferences: " + str(students_preferences))
-                    print("School preferences: " + str(schools_preferences))
-                    print("Affirmative Action School preferences: " + str(aff_act_schools_preferences))
-                    print("Normal Match: " + str(normal_match))
-                    print("Affirmative Action Match: " + str(aff_act_match))
+            num_min_students_worse = 0
+            for student in students_list:
+                improved = check_student_welfare(student, normal_match, aff_act_match)
+                if improved == -1:
+                    num_min_students_worse += 1
+                
+            if num_min_students_worse >= num_students - 1:
+                print(num_min_students_worse)
+                print("Student preferences: " + str(students_preferences))
+                print("School preferences: " + str(schools_preferences))
+                print("Affirmative Action School preferences: " + str(aff_act_schools_preferences))
+                print("Normal Match: " + str(normal_match))
+                print("Affirmative Action Match: " + str(aff_act_match))
 
     print("# Same " + str(num_same))
     print("# Diff " + str(num_diff))
-    print("# Benefitted " + str(num_benefit))
-    print("# Unchanged " + str(num_unchanged))
-    print("# Worsened " + str(num_worsened))
-    print("# Total " + str(num_total))
 
     
